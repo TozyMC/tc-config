@@ -1,5 +1,7 @@
 package xyz.tozymc.configuration.option;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import xyz.tozymc.configuration.TcConfig;
 import xyz.tozymc.configuration.TcConfigSection;
 
@@ -10,11 +12,21 @@ import xyz.tozymc.configuration.TcConfigSection;
  * @since 1.0
  */
 public abstract class TcConfigOptions {
+  /**
+   * Defaults path separator use in configuration.
+   */
   public static final char DEFAULT_PATH_SEPARATOR = '.';
 
+  private final TcConfig config;
   private char pathSeparator = DEFAULT_PATH_SEPARATOR;
 
-  protected TcConfigOptions() {}
+  /**
+   * Creates new {@link TcConfigOptions} for {@link TcConfig}.
+   *
+   * @param config Configuration that owned this options.
+   */
+  @Contract(pure = true)
+  protected TcConfigOptions(@NotNull TcConfig config) {this.config = config;}
 
   /**
    * Gets the char that will be used to separate in {@link TcConfigSection}, default is "{@value
@@ -35,5 +47,14 @@ public abstract class TcConfigOptions {
   public TcConfigOptions pathSeparator(char separator) {
     this.pathSeparator = separator;
     return this;
+  }
+
+  /**
+   * Returns the {@link TcConfig} that owned this options.
+   *
+   * @return Configuration that owned this options.
+   */
+  public @NotNull TcConfig config() {
+    return config;
   }
 }
