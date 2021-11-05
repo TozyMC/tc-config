@@ -108,14 +108,13 @@ public final class TcConfigSerializations {
   /**
    * Creates map represented the object.
    *
-   * @param type   The class type of serializable object.
    * @param object Object to serialize
-   * @param <T>    Type of serializable object.
    * @return Map represented the object.
    * @throws TcConfigSerializationException Thrown when no serializer represented the type.
    */
-  public static <T> @NotNull Map<String, ?> serializeObject(@NotNull Class<T> type, T object) {
-    var serialized = serializeObjectBySerializer(type, object);
+  public static @NotNull Map<String, ?> serializeObject(@NotNull Object object) {
+    var type = object.getClass();
+    var serialized = serializeObjectBySerializer(object);
     if (serialized != null) {
       return serialized;
     }
@@ -126,11 +125,11 @@ public final class TcConfigSerializations {
     return serializeAnnotatedObject(type, object);
   }
 
-  private static <T> @Nullable Map<String, ?> serializeObjectBySerializer(@NotNull Class<T> type,
-      T object) {
+  private static <T> @Nullable Map<String, ?> serializeObjectBySerializer(@NotNull T object) {
     TcConfigSerializer<T> serializer;
     //noinspection unchecked
-    if ((serializer = (TcConfigSerializer<T>) registeredSerializers.get(type)) == null) {
+    if ((serializer = (TcConfigSerializer<T>) registeredSerializers.get(object.getClass()))
+        == null) {
       return null;
     }
 

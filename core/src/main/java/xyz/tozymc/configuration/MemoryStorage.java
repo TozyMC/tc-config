@@ -3,10 +3,13 @@ package xyz.tozymc.configuration;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import xyz.tozymc.configuration.exception.TcConfigException;
+import xyz.tozymc.configuration.exception.TcConfigSerializationException;
+import xyz.tozymc.configuration.serialization.TcConfigSerializations;
 import xyz.tozymc.configuration.util.SectionPaths;
 
 class MemoryStorage {
@@ -62,14 +65,7 @@ class MemoryStorage {
           return null;
         }
       }
-      if (newVal instanceof Map) {
-        //noinspection unchecked
-        return createSection(path, true, (Map<String, ?>) newVal);
-      }
-      if (newVal.getClass().isArray()) {
-        return setArrayValue(path, newVal);
-      }
-      return setValue(path, newVal);
+      return setShallow(path, newVal);
     }
 
     var firstNode = getFirstPathNode(path, pathSepInd);
@@ -84,6 +80,22 @@ class MemoryStorage {
     }
     return ((MemoryConfigSection) val).storage.set(trimFirstPathNode(path, pathSepInd), absent,
         newVal);
+  }
+
+  private Object setShallow(String path, Object value) {
+    if (value instanceof Map) {
+      //noinspection unchecked
+      return createSection(path, true, (Map<String, ?>) value);
+    }
+    try {
+      var serialized = TcConfigSerializations.serializeObject(value);
+      return createSection(path, true, serialized);
+    } catch (TcConfigSerializationException ignored) {
+    }
+    if (value.getClass().isArray()) {
+      return setArrayValue(path, value);
+    }
+    return setValue(path, value);
   }
 
   private Object setValue(String key, Object value) {
@@ -121,7 +133,20 @@ class MemoryStorage {
     if (value instanceof boolean[]) {
       return values.put(key, List.of((boolean[]) value));
     }
-    return values.put(key, List.of((Object[]) value));
+    return values.put(key, mappedArrayValue((Object[]) value));
+  }
+
+  private List<Object> mappedArrayValue(Object[] values) {
+    var list = new LinkedList<>();
+    for (var value : values) {
+      try {
+        var serialized = TcConfigSerializations.serializeObject(value);
+        list.add(serialized);
+      } catch (TcConfigSerializationException ignored) {
+        list.add(value);
+      }
+    }
+    return list;
   }
 
   MemoryConfigSection createShallowSection(String path) {

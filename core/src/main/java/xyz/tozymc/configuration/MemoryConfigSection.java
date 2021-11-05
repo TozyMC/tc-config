@@ -54,7 +54,7 @@ public class MemoryConfigSection implements TcConfigSection {
     var val = get(path);
     if (val instanceof MemoryConfigSection) {
       return TcConfigSerializations.deserializeObject(type,
-          ((MemoryConfigSection) val).getValues());
+          ((MemoryConfigSection) val).storage.cachedValues());
     }
     return type.isInstance(val) ? type.cast(val) : null;
   }
