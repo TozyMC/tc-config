@@ -24,6 +24,9 @@ public class MemoryConfigSection implements TcConfigSection {
   private final String name;
   private final String fullPath;
 
+  /**
+   * @hidden
+   */
   @TestOnly
   protected MemoryConfigSection(Object unused) {
     this.root = null;
@@ -32,6 +35,9 @@ public class MemoryConfigSection implements TcConfigSection {
     this.fullPath = "";
   }
 
+  /**
+   * Constructs new root {@link TcConfigSection}.
+   */
   protected MemoryConfigSection() {
     if (!(this instanceof TcConfig)) {
       throw new IllegalStateException("Cannot construct a root section when not a TcConfig");
@@ -42,6 +48,12 @@ public class MemoryConfigSection implements TcConfigSection {
     this.fullPath = "";
   }
 
+  /**
+   * Constructs new child {@link TcConfigSection}.
+   *
+   * @param parent Parent containing the child section.
+   * @param name   Name of section.
+   */
   protected MemoryConfigSection(@NotNull TcConfigSection parent, @NotNull String name) {
     this.root = parent.getRoot();
     this.parent = parent;
