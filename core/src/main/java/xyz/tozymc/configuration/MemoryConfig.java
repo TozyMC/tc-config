@@ -2,6 +2,7 @@ package xyz.tozymc.configuration;
 
 import org.jetbrains.annotations.NotNull;
 import xyz.tozymc.configuration.option.TcConfigOptions;
+import xyz.tozymc.configuration.util.Validators;
 
 /**
  * The type of {@link TcConfig} that is stored in memory.
@@ -10,15 +11,14 @@ import xyz.tozymc.configuration.option.TcConfigOptions;
  * @since 1.0
  */
 public abstract class MemoryConfig extends MemoryConfigSection implements TcConfig {
-  protected final TcConfigOptions options;
+  protected TcConfigOptions options;
 
-  protected MemoryConfig(@NotNull TcConfigOptions options) {
+  protected MemoryConfig() {
     super();
-    this.options = options;
   }
 
   @Override
   public @NotNull TcConfigOptions getOptions() {
-    return options;
+    return Validators.notNull(options, "Options is not initialized");
   }
 }

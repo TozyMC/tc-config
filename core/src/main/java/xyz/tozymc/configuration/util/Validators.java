@@ -26,4 +26,12 @@ public final class Validators {
     }
     return obj;
   }
+
+  @Contract(value = "null, _ -> fail; !null, _ -> param1", pure = true)
+  public static <T> @NotNull T notNull(T obj, String errMessage) {
+    if (obj == null) {
+      throw new NullPointerException(errMessage);
+    }
+    return obj;
+  }
 }
