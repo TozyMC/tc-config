@@ -13,8 +13,10 @@ class MemoryStorage {
   private static final char PATH_SEPARATOR = '.';
 
   final LinkedHashMap<String, Object> values = new LinkedHashMap<>();
-
   private final MemoryConfigSection section;
+
+  private Set<String> keySet;
+  private Map<String, ?> cachedValues;
 
   MemoryStorage(MemoryConfigSection section) {this.section = section;}
 
@@ -157,14 +159,18 @@ class MemoryStorage {
     return child.storage.createSection(trimFirstPathNode(path, pathSepInd), force, initials);
   }
 
-  // todo cache
   Set<String> getKeys(boolean deep) {
     if (!deep) {
       return Collections.unmodifiableSet(values.keySet());
     }
-    Set<String> keys = new LinkedHashSet<>();
-    keySet(keys);
-    return Collections.unmodifiableSet(keys);
+    Set<String> ks = keySet;
+    if (ks == null) {
+      Set<String> keys = new LinkedHashSet<>();
+      keySet(keys);
+      ks = Collections.unmodifiableSet(keys);
+      keySet = ks;
+    }
+    return ks;
   }
 
   private void keySet(Set<String> keys) {
@@ -177,7 +183,6 @@ class MemoryStorage {
     });
   }
 
-  // todo cache
   Map<String, ?> getValues() {
     Map<String, Object> root = new LinkedHashMap<>();
     mapValues(root);
@@ -194,5 +199,13 @@ class MemoryStorage {
         mapped.put(k, v);
       }
     });
+  }
+
+  Map<String, ?> cachedValues() {
+    if (cachedValues == null) {
+      cachedValues = getValues();
+      return cachedValues;
+    }
+    return cachedValues;
   }
 }
