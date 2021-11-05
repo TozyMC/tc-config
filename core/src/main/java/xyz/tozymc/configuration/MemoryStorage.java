@@ -184,6 +184,11 @@ class MemoryStorage {
     return child.storage.createSection(trimFirstPathNode(path, pathSepInd), force, initials);
   }
 
+  void clearCache() {
+    keySet = null;
+    cachedValues = null;
+  }
+
   Set<String> getKeys(boolean deep) {
     if (!deep) {
       return Collections.unmodifiableSet(values.keySet());
