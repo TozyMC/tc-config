@@ -21,7 +21,10 @@ subprojects {
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
     if (JavaVersion.current() < javaVersion) {
-      toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+      toolchain {
+        languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+        vendor = JvmVendorSpec.AZUL
+      }
     }
   }
 
