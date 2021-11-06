@@ -3,10 +3,6 @@ package xyz.tozymc.configuration.util;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * @author TozyMC
- * @since 1.0
- */
 @SuppressWarnings("UnusedReturnValue")
 public final class Validators {
   private Validators() {}
