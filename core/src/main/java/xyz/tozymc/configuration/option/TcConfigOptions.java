@@ -44,7 +44,7 @@ public abstract class TcConfigOptions {
    * @param separator Path separator.
    * @return This object, for chaining.
    */
-  public TcConfigOptions pathSeparator(char separator) {
+  public @NotNull TcConfigOptions pathSeparator(char separator) {
     this.pathSeparator = separator;
     return this;
   }
