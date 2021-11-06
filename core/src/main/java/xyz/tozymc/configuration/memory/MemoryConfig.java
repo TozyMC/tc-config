@@ -1,6 +1,7 @@
-package xyz.tozymc.configuration;
+package xyz.tozymc.configuration.memory;
 
 import org.jetbrains.annotations.NotNull;
+import xyz.tozymc.configuration.TcConfig;
 import xyz.tozymc.configuration.option.TcConfigOptions;
 import xyz.tozymc.configuration.util.Validators;
 

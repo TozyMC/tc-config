@@ -1,4 +1,4 @@
-package xyz.tozymc.configuration;
+package xyz.tozymc.configuration.memory;
 
 import java.util.Map;
 import java.util.Set;
@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.TestOnly;
 import org.jetbrains.annotations.UnmodifiableView;
+import xyz.tozymc.configuration.TcConfig;
+import xyz.tozymc.configuration.TcConfigSection;
 import xyz.tozymc.configuration.exception.TcConfigException;
 import xyz.tozymc.configuration.serialization.TcConfigSerializations;
 import xyz.tozymc.configuration.util.SectionPaths;

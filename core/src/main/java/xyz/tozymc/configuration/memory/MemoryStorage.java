@@ -1,4 +1,4 @@
-package xyz.tozymc.configuration;
+package xyz.tozymc.configuration.memory;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
