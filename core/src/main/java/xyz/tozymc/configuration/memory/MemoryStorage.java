@@ -150,7 +150,7 @@ class MemoryStorage {
   }
 
   MemoryConfigSection createShallowSection(String path) {
-    var child = new MemoryConfigSection(section, path);
+    var child = section.newSection(section, path);
     values.put(path, child);
     return child;
   }

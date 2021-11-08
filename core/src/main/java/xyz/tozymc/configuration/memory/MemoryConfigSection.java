@@ -19,7 +19,7 @@ import xyz.tozymc.configuration.util.Validators;
  * @author TozyMC
  * @since 1.0
  */
-public class MemoryConfigSection implements TcConfigSection {
+public abstract class MemoryConfigSection implements TcConfigSection {
   final MemoryStorage storage = new MemoryStorage(this);
   private final TcConfig root;
   private final TcConfigSection parent;
@@ -62,6 +62,11 @@ public class MemoryConfigSection implements TcConfigSection {
     this.name = name;
     this.fullPath = SectionPaths.createPath(parent, name);
   }
+
+  /**
+   * @hidden
+   */
+  protected abstract MemoryConfigSection newSection(TcConfigSection parent, String name);
 
   @Override
   public <T> @Nullable T get(@NotNull String path, @NotNull Class<T> type) {
