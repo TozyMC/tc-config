@@ -12,6 +12,8 @@ public final class SectionPaths {
       return name;
     }
     var parentPath = parent.getFullPath();
-    return parentPath.isBlank() ? name : String.format("%s.%s", parentPath, name);
+    return parentPath.isBlank()
+        ? name
+        : String.format("%s%s%s", parentPath, parent.getRoot().getOptions().pathSeparator(), name);
   }
 }

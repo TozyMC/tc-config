@@ -13,8 +13,6 @@ import xyz.tozymc.configuration.serialization.TcConfigSerializations;
 import xyz.tozymc.configuration.util.SectionPaths;
 
 class MemoryStorage {
-  private static final char PATH_SEPARATOR = '.';
-
   final LinkedHashMap<String, Object> values = new LinkedHashMap<>();
   private final MemoryConfigSection section;
 
@@ -23,14 +21,16 @@ class MemoryStorage {
 
   MemoryStorage(MemoryConfigSection section) {this.section = section;}
 
-  private static int getPathSepIndex(String path) {return path.indexOf(PATH_SEPARATOR);}
-
   private static String getFirstPathNode(String path, int pathSepInd) {
     return path.substring(0, pathSepInd);
   }
 
   private static String trimFirstPathNode(String path, int pathSepInd) {
     return path.substring(pathSepInd + 1);
+  }
+
+  private int getPathSepIndex(String path) {
+    return path.indexOf(section.getRoot().getOptions().pathSeparator());
   }
 
   void reload(Map<String, ?> map) {
