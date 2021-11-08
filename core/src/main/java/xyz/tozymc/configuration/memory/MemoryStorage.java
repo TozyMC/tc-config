@@ -33,6 +33,19 @@ class MemoryStorage {
     return path.substring(pathSepInd + 1);
   }
 
+  void reload(Map<String, ?> map) {
+    clearCache();
+    values.clear();
+    map.forEach((k, v) -> {
+      if (v instanceof Map) {
+        //noinspection unchecked
+        createSection(k, true, (Map<String, ?>) v);
+      } else {
+        set(k, false, v);
+      }
+    });
+  }
+
   Object get(String path) {
     if (path.isEmpty()) {
       return null;

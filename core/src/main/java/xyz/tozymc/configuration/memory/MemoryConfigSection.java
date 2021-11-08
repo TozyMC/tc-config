@@ -68,6 +68,10 @@ public abstract class MemoryConfigSection implements TcConfigSection {
    */
   protected abstract MemoryConfigSection newSection(TcConfigSection parent, String name);
 
+  protected void reloadSection(Map<String, ?> map) {
+    storage.reload(map);
+  }
+
   @Override
   public <T> @Nullable T get(@NotNull String path, @NotNull Class<T> type) {
     var val = get(path);
