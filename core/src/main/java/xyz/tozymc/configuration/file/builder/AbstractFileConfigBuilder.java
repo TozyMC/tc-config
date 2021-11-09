@@ -105,23 +105,29 @@ public abstract class AbstractFileConfigBuilder<T extends FileConfig> extends
   }
 
   public T createConfig() {
-    if (Files.notExists(configPath)) {
-      try {
-        Files.createFile(configPath);
-      } catch (IOException e) {
-        throw new UncheckedIOException(
-            "Error occurs when creating new file " + configPath.getFileName().toString(), e);
-      }
-      if (defaultStream != null) {
-        try (var out = Files.newOutputStream(configPath)) {
-          defaultStream.transferTo(out);
-        } catch (IOException e) {
-          throw new UncheckedIOException("Error occurs when transfer default stream to file", e);
-        }
-      }
+    saveDefaultConfig();
+    return buildConfig();
+  }
+
+  private void saveDefaultConfig() {
+    if (!Files.notExists(configPath)) {
+      return;
+    }
+    try {
+      Files.createFile(configPath);
+    } catch (IOException e) {
+      throw new UncheckedIOException(
+          "Error occurs when creating new file " + configPath.getFileName().toString(), e);
     }
 
-    return buildConfig();
+    if (defaultStream == null) {
+      return;
+    }
+    try (var out = Files.newOutputStream(configPath)) {
+      defaultStream.transferTo(out);
+    } catch (IOException e) {
+      throw new UncheckedIOException("Error occurs when transfer default stream to file", e);
+    }
   }
 
   protected abstract T buildConfig();
