@@ -6,6 +6,8 @@ import java.lang.invoke.MethodType;
 import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,9 +73,9 @@ final class ReflectionCache {
       var constructor = lookup.findConstructor(clazz, MethodType.methodType(void.class));
       return new AnnotatedConstructor(constructor, false);
     } catch (NoSuchMethodException e) {
-      throw new RuntimeException("Type must have an empty constructor to deserialize");
+      throw new RuntimeException("Type must have an empty constructor to deserialize", e);
     } catch (IllegalAccessException e) {
-      throw new RuntimeException("Error when accessing to empty constructor");
+      throw new RuntimeException("Error when accessing to empty constructor", e);
     }
   }
 
@@ -87,14 +89,16 @@ final class ReflectionCache {
     }
 
     Object newInstance(Map<String, ?> params) {
-      return hasParams ? newInstance0(params.values()) : setObjectFields(newInstance0(), params);
+      return hasParams
+          ? newInstance0(params.values())
+          : setObjectFields(newInstance0(Collections.emptyList()), params);
     }
 
-    private Object newInstance0(Object... values) {
+    private Object newInstance0(Collection<?> values) {
       try {
-        return constructor.invoke(values);
+        return constructor.invokeWithArguments(List.copyOf(values));
       } catch (Throwable e) {
-        throw new RuntimeException("Error when invoking new instance");
+        throw new RuntimeException("Error when invoking new instance", e);
       }
     }
 
@@ -113,7 +117,7 @@ final class ReflectionCache {
       try {
         this.varHandle = lookup.unreflectVarHandle(field);
       } catch (IllegalAccessException e) {
-        throw new RuntimeException("Error when converting Field to VarHandle");
+        throw new RuntimeException("Error when converting Field to VarHandle", e);
       }
       this.key = field.getAnnotation(SerializeAs.class).value();
     }
