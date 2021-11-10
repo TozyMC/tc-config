@@ -96,13 +96,15 @@ class MemoryStorage {
   }
 
   private Object setShallow(String path, Object value) {
+    var old = values.get(path);
     if (value instanceof Map) {
       //noinspection unchecked
-      return createSection(path, true, (Map<String, ?>) value);
+      createSection(path, true, (Map<String, ?>) value);
+      return old;
     }
     try {
-      var serialized = TcConfigSerializations.serializeObject(value);
-      return createSection(path, true, serialized);
+      createSection(path, true, TcConfigSerializations.serializeObject(value));
+      return old;
     } catch (TcConfigSerializationException ignored) {
     }
     if (value.getClass().isArray()) {
