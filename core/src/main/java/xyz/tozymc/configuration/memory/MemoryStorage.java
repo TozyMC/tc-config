@@ -58,12 +58,10 @@ class MemoryStorage {
 
     var firstNode = getFirstPathNode(path, pathSepInd);
     var val = values.get(firstNode);
-    if (!(val instanceof MemoryConfigSection)) {
-      throw new TcConfigException(
-          SectionPaths.createPath(section, firstNode) + " is not a section");
+    if (val instanceof MemoryConfigSection) {
+      return ((MemoryConfigSection) val).storage.get(trimFirstPathNode(path, pathSepInd));
     }
-
-    return ((MemoryConfigSection) val).storage.get(trimFirstPathNode(path, pathSepInd));
+    throw new TcConfigException(SectionPaths.createPath(section, firstNode) + " is not a section");
   }
 
   Object set(String path, boolean absent, Object newVal) {
@@ -84,15 +82,14 @@ class MemoryStorage {
     var firstNode = getFirstPathNode(path, pathSepInd);
     var val = values.get(firstNode);
     if (val == null) {
-      val = createShallowSection(path);
+      val = createShallowSection(firstNode);
     }
 
-    if (!(val instanceof MemoryConfigSection)) {
-      throw new TcConfigException(
-          SectionPaths.createPath(section, firstNode) + " is not a section");
+    if (val instanceof MemoryConfigSection) {
+      return ((MemoryConfigSection) val).storage.set(trimFirstPathNode(path, pathSepInd), absent,
+          newVal);
     }
-    return ((MemoryConfigSection) val).storage.set(trimFirstPathNode(path, pathSepInd), absent,
-        newVal);
+    throw new TcConfigException(SectionPaths.createPath(section, firstNode) + " is not a section");
   }
 
   private Object setShallow(String path, Object value) {
