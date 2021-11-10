@@ -210,19 +210,18 @@ class MemoryStorage {
     Set<String> ks = keySet;
     if (ks == null) {
       Set<String> keys = new LinkedHashSet<>();
-      keySet(keys);
+      keySet(keys, section);
       ks = Collections.unmodifiableSet(keys);
       keySet = ks;
     }
     return ks;
   }
 
-  private void keySet(Set<String> keys) {
+  private void keySet(Set<String> keys, MemoryConfigSection relativeTo) {
     values.forEach((k, v) -> {
+      keys.add(SectionPaths.createPath(section, relativeTo, k));
       if (v instanceof MemoryConfigSection) {
-        ((MemoryConfigSection) v).storage.keySet(keys);
-      } else {
-        keys.add(SectionPaths.createPath(section, k));
+        ((MemoryConfigSection) v).storage.keySet(keys, relativeTo);
       }
     });
   }
