@@ -58,8 +58,8 @@ final class ReflectionCache {
         .map(f -> f.varHandle.varType())
         .collect(Collectors.toUnmodifiableList());
     try {
-      var constructor = lookup.findConstructor(clazz,
-          MethodType.methodType(void.class, paramTypes));
+      var constructor = MethodHandles.privateLookupIn(clazz, lookup)
+          .findConstructor(clazz, MethodType.methodType(void.class, paramTypes));
       if (constructor != null) {
         return new AnnotatedConstructor(constructor, true);
       }
