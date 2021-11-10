@@ -115,7 +115,8 @@ final class ReflectionCache {
 
     private AnnotatedField(Field field) {
       try {
-        this.varHandle = lookup.unreflectVarHandle(field);
+        this.varHandle = MethodHandles.privateLookupIn(field.getDeclaringClass(), lookup)
+            .unreflectVarHandle(field);
       } catch (IllegalAccessException e) {
         throw new RuntimeException("Error when converting Field to VarHandle", e);
       }
