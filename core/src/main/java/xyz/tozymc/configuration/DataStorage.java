@@ -450,6 +450,33 @@ public interface DataStorage {
   }
 
   /**
+   * Gets the {@link List} value with given path.
+   *
+   * @param path Path to list.
+   * @param type The class type of list element
+   * @param <T>  Type of element
+   * @return The requested list.
+   * @see #get(String)
+   */
+  default <T> @UnmodifiableView @NotNull List<T> getList(@NotNull String path,
+      @NotNull Class<T> type) {
+    var val = get(path);
+    if (val instanceof List) {
+      return ((List<?>) val).stream().map(e -> {
+        if (e instanceof TcConfigSection) {
+          return TcConfigSerializations.deserializeObject(type, ((TcConfigSection) e).getValues());
+        }
+        if (e instanceof Map) {
+          //noinspection unchecked
+          return TcConfigSerializations.deserializeObject(type, (Map<String, ?>) e);
+        }
+        return type.cast(e);
+      }).collect(Collectors.toUnmodifiableList());
+    }
+    return Collections.emptyList();
+  }
+
+  /**
    * Gets the {@code List&#60;String>} value with given path.
    *
    * @param path Path to list.
