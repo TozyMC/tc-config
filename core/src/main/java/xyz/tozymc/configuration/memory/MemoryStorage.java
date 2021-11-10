@@ -1,9 +1,11 @@
 package xyz.tozymc.configuration.memory;
 
+import static xyz.tozymc.configuration.memory.PrimitiveArrays.toList;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +29,19 @@ class MemoryStorage {
 
   private static String trimFirstPathNode(String path, int pathSepInd) {
     return path.substring(pathSepInd + 1);
+  }
+
+  private static List<?> mappedArrayValue(Object[] values) {
+    var list = new ArrayList<>();
+    for (var value : values) {
+      try {
+        var serialized = TcConfigSerializations.serializeObject(value);
+        list.add(serialized);
+      } catch (TcConfigSerializationException ignored) {
+        list.add(value);
+      }
+    }
+    return list;
   }
 
   private int getPathSepIndex(String path) {
@@ -122,43 +137,30 @@ class MemoryStorage {
       return values.remove(key);
     }
     if (value instanceof byte[]) {
-      return values.put(key, List.of((byte[]) value));
+      return values.put(key, toList((byte[]) value));
     }
     if (value instanceof short[]) {
-      return values.put(key, List.of((short[]) value));
+      return values.put(key, toList((short[]) value));
     }
     if (value instanceof int[]) {
-      return values.put(key, List.of((int[]) value));
+      return values.put(key, toList((int[]) value));
     }
     if (value instanceof long[]) {
-      return values.put(key, List.of((long[]) value));
+      return values.put(key, toList((long[]) value));
     }
     if (value instanceof float[]) {
-      return values.put(key, List.of((float[]) value));
+      return values.put(key, toList((float[]) value));
     }
     if (value instanceof double[]) {
-      return values.put(key, List.of((double[]) value));
+      return values.put(key, toList((double[]) value));
     }
     if (value instanceof char[]) {
-      return values.put(key, List.of((char[]) value));
+      return values.put(key, toList((char[]) value));
     }
     if (value instanceof boolean[]) {
-      return values.put(key, List.of((boolean[]) value));
+      return values.put(key, toList((boolean[]) value));
     }
     return values.put(key, mappedArrayValue((Object[]) value));
-  }
-
-  private List<Object> mappedArrayValue(Object[] values) {
-    var list = new LinkedList<>();
-    for (var value : values) {
-      try {
-        var serialized = TcConfigSerializations.serializeObject(value);
-        list.add(serialized);
-      } catch (TcConfigSerializationException ignored) {
-        list.add(value);
-      }
-    }
-    return list;
   }
 
   MemoryConfigSection createShallowSection(String path) {
