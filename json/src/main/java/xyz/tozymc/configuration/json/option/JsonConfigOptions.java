@@ -7,6 +7,12 @@ import xyz.tozymc.configuration.file.FileConfig;
 import xyz.tozymc.configuration.file.option.FileConfigOptions;
 import xyz.tozymc.configuration.json.JsonConfig;
 
+/**
+ * Various options for {@link JsonConfig}.
+ *
+ * @author TozyMC
+ * @since 1.0
+ */
 public class JsonConfigOptions extends FileConfigOptions {
   private Gson gson;
   private boolean prettyPrint = true;
