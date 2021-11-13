@@ -105,11 +105,15 @@ public abstract class AbstractFileConfigBuilder<T extends FileConfig> extends
   }
 
   public T createConfig() {
+    createFileIfNotExist();
     saveDefaultConfig();
-    return buildConfig();
+
+    var config = buildConfig();
+    config.getOptions().reloadType(reloadableType).pathSeparator(pathSeparator());
+    return config;
   }
 
-  private void saveDefaultConfig() {
+  private synchronized void createFileIfNotExist() {
     if (!Files.notExists(configPath)) {
       return;
     }
@@ -119,7 +123,9 @@ public abstract class AbstractFileConfigBuilder<T extends FileConfig> extends
       throw new UncheckedIOException(
           "Error occurs when creating new file " + configPath.getFileName().toString(), e);
     }
+  }
 
+  private synchronized void saveDefaultConfig() {
     if (defaultStream == null) {
       return;
     }
