@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import xyz.tozymc.configuration.exception.TcConfigSerializationException;
 import xyz.tozymc.configuration.serialization.annotation.SerializeAs;
 
 final class ReflectionCache {
@@ -73,9 +74,10 @@ final class ReflectionCache {
       var constructor = lookup.findConstructor(clazz, MethodType.methodType(void.class));
       return new AnnotatedConstructor(constructor, false);
     } catch (NoSuchMethodException e) {
-      throw new RuntimeException("Type must have an empty constructor to deserialize", e);
+      throw new TcConfigSerializationException("Type must have an empty constructor to deserialize",
+          e);
     } catch (IllegalAccessException e) {
-      throw new RuntimeException("Error when accessing to empty constructor", e);
+      throw new TcConfigSerializationException("Error when accessing to empty constructor", e);
     }
   }
 
@@ -98,7 +100,7 @@ final class ReflectionCache {
       try {
         return constructor.invokeWithArguments(List.copyOf(values));
       } catch (Throwable e) {
-        throw new RuntimeException("Error when invoking new instance", e);
+        throw new TcConfigSerializationException("Error when invoking new instance", e);
       }
     }
 
@@ -118,7 +120,7 @@ final class ReflectionCache {
         this.varHandle = MethodHandles.privateLookupIn(field.getDeclaringClass(), lookup)
             .unreflectVarHandle(field);
       } catch (IllegalAccessException e) {
-        throw new RuntimeException("Error when converting Field to VarHandle", e);
+        throw new TcConfigSerializationException("Error when converting Field to VarHandle", e);
       }
       this.key = field.getAnnotation(SerializeAs.class).value();
     }

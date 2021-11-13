@@ -15,4 +15,14 @@ public class TcConfigSerializationException extends RuntimeException {
   public TcConfigSerializationException(String message) {
     super(message);
   }
+
+  /**
+   * Creates new {@link TcConfigSerializationException} with detail message and cause.
+   *
+   * @param message The detail message.
+   * @param cause   The cause.
+   */
+  public TcConfigSerializationException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }
