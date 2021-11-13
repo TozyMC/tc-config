@@ -29,6 +29,13 @@ public class FileConfigSection extends MemoryConfigSection {
     super(parent, name);
   }
 
+  /**
+   * @hidden
+   */
+  protected Map<String, ?> getValuesWithoutReload() {
+    return super.getValues();
+  }
+
   @Override
   protected FileConfigSection newSection(TcConfigSection parent, String name) {
     return new FileConfigSection(parent, name);
