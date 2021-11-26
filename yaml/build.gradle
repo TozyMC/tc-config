@@ -1,0 +1,4 @@
+dependencies {
+  implementation project(':core')
+  implementation 'org.yaml:snakeyaml:1.29'
+}
