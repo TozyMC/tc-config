@@ -55,6 +55,7 @@ public abstract class FileConfig extends FileConfigSection implements TcConfig {
    * Reads data from file and loads it to memory.
    */
   public void reload() {
+    updateLastModifiedTimeIfNeeded();
     Map<String, ?> values;
     try {
       values = readToMap();

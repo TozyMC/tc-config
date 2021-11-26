@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.TestOnly;
 import org.jetbrains.annotations.UnmodifiableView;
 import xyz.tozymc.configuration.TcConfig;
 import xyz.tozymc.configuration.TcConfigSection;
@@ -25,17 +24,6 @@ public abstract class MemoryConfigSection implements TcConfigSection {
   private final TcConfigSection parent;
   private final String name;
   private final String fullPath;
-
-  /**
-   * @hidden
-   */
-  @TestOnly
-  protected MemoryConfigSection(Object unused) {
-    this.root = null;
-    this.parent = null;
-    this.name = "";
-    this.fullPath = "";
-  }
 
   /**
    * Constructs new root {@link TcConfigSection}.

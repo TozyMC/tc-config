@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.TestOnly;
 import org.jetbrains.annotations.UnmodifiableView;
 import xyz.tozymc.configuration.TcConfigSection;
 import xyz.tozymc.configuration.exception.TcConfigException;
@@ -17,16 +16,17 @@ import xyz.tozymc.configuration.memory.MemoryConfigSection;
  * @since 1.0
  */
 public class FileConfigSection extends MemoryConfigSection {
-  /**
-   * @hidden
-   */
-  @TestOnly
-  protected FileConfigSection(Object unused) {super(unused);}
-
   protected FileConfigSection() {super();}
 
   protected FileConfigSection(@NotNull TcConfigSection parent, @NotNull String name) {
     super(parent, name);
+  }
+
+  /**
+   * @hidden
+   */
+  protected Map<String, ?> getValuesWithoutReload() {
+    return super.getValues();
   }
 
   @Override
