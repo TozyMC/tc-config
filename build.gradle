@@ -1,10 +1,15 @@
 allprojects {
   group = 'xyz.tozymc'
   version = projectVersion
+  description = projectDescription
 }
 
 subprojects {
   apply plugin: 'java-library'
+  apply plugin: 'maven-publish'
+  apply plugin: 'signing'
+
+  archivesBaseName = 'tc-config-' + project.name
 
   repositories {
     mavenCentral()
@@ -19,6 +24,9 @@ subprojects {
 
   def targetJavaVersion = 11
   java {
+    withSourcesJar()
+    withJavadocJar()
+
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
@@ -39,5 +47,74 @@ subprojects {
 
   tasks.named('test') {
     useJUnitPlatform()
+  }
+
+  javadoc {
+    source sourceSets.main.allJava
+    options {
+      charSet 'utf-8'
+      source '11'
+      bottom "Copyright &#169; 2021 TozyMC. All rights reserved."
+      links << 'https://docs.oracle.com/en/java/javase/11/docs/api/'
+      links << 'https://javadoc.io/doc/org.jetbrains/annotations/23.0.0/'
+    }
+    if (JavaVersion.current().isJava9Compatible()) {
+      options.addBooleanOption('html5', true)
+    }
+  }
+
+  publishing {
+    publications {
+      mavenJava(MavenPublication) {
+        artifactId = archivesBaseName
+        from components.java
+        pom {
+          name = 'tc-config'
+          description = project.description
+          url = 'https://github.com/TozyMC/tc-config'
+          inceptionYear = '2021'
+
+          licenses {
+            license {
+              name = 'MIT License'
+              url = 'https://github.com/TozyMC/tc-config/blob/main/LICENSE'
+            }
+          }
+
+          scm {
+            connection = 'scm:git:git://github.com/TozyMC/tc-config.git'
+            developerConnection = 'scm:git:ssh://github.com:TozyMC/tc-config.git'
+            url = 'https://github.com/TozyMC/tc-config'
+          }
+
+          developers {
+            developer {
+              id = 'tozymc'
+              name = 'TozyMC'
+              url = 'http://tozymc.xyz'
+            }
+          }
+        }
+      }
+    }
+    repositories {
+      maven {
+        url = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+        credentials {
+          username findProperty('ossrhUsername')
+          password findProperty('ossrhPassword')
+        }
+      }
+    }
+  }
+
+  signing {
+    sign publishing.publications.mavenJava
+  }
+}
+
+configure([project(':json'), project(':yaml'), project(':toml')]) {
+  dependencies {
+    api project(':core')
   }
 }
